@@ -6,15 +6,14 @@ const Router = require("./src/routes/index");
 
 const app = express();
 app.use(cors());
-
-
+const PORT = process.env.PORT || 5000
 app.use(express.json());
 
 // Routes
 Router(app);
 
-app.listen(5000, () => {
-    console.log(`🚀 Server đang chạy tại http://localhost:5000`);
+app.listen(PORT, () => {
+    console.log(`🚀 Server đang chạy tại http://localhost:${PORT}`);
 });
 // Kết nối và đồng bộ database
 const startServer = async () => {

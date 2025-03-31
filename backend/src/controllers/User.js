@@ -64,30 +64,40 @@ const User = {
             const { fullname, mssv, className, email } = req.body;
             if (!fullname || !mssv || !className || !email)
                 return res.status(400).json({ message: "Thiếu thông tin cần thiết", status: 'failed' });
-            const existMssv = await userModel.findOne({
-                where: {
-                    mssv: mssv
-                }
-            });
+
+            // Kiểm tra MSSV trùng
+            const existMssv = await userModel.findOne({ where: { mssv: mssv } });
             if (existMssv)
                 return res.status(400).json({ message: "Mssv bị trùng", status: 'failed' });
-            const existEmail = await userModel.findOne({
-                where: {
-                    email: email
-                }
-            });
+
+            // Kiểm tra Email trùng
+            const existEmail = await userModel.findOne({ where: { email: email } });
             if (existEmail)
                 return res.status(400).json({ message: "Email bị trùng", status: 'failed' });
+
+            // Tìm user có ID lớn nhất
+            const lastUser = await userModel.findOne({
+                attributes: ["id"],
+                order: [["id", "DESC"]]
+            });
+
+            // Xác định ID mới
+            const newId = lastUser ? lastUser.id + 1 : 1;
+
+            // Thêm user với ID mới
             await userModel.create({
-                fullname: fullname,
-                mssv: mssv,
-                email: email,
-                className: className
-            })
+                id: newId, // Thủ công đặt ID
+                fullname,
+                mssv,
+                email,
+                className
+            });
+
             return res.status(200).json({ message: "Thêm thành công", status: 'success' });
+
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ message: "Loi khi them du lieu user", status: 'failed' });
+            return res.status(500).json({ message: "Lỗi khi thêm dữ liệu user", status: 'failed' });
         }
     },
     deleteUser: async (req, res) => {

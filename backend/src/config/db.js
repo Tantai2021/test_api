@@ -7,6 +7,7 @@ const sequelize = new Sequelize(
     process.env.DB_PASS,
     {
         host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
         dialect: "mysql",
         dialectOptions: {
             charset: "utf8"  // ✅ Dùng utf8 thay vì utf8mb4
